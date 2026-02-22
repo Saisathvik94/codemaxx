@@ -24,7 +24,7 @@ var explainUserPrompt string
 // explainCmd represents the ask command
 var explainCmd = &cobra.Command{
 	Use:   "explain [file] [question]",
-	Short: "Get explaination of your code directly from the terminal",
+	Short: "Get explanation of your code directly from the terminal",
 	Long: `Sends your question to the selected AI model and returns a direct answer 
 inside your terminal.
 
