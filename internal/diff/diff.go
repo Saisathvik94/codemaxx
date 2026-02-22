@@ -9,7 +9,7 @@ import (
 func ShowDiff(original, modified string) {
 	dmp := diffmatchpatch.New()
 
-	diffs:= dmp.DiffMain(original, modified, false)
+	diffs := dmp.DiffMain(original, modified, false)
 
 	for _, d := range diffs {
 		switch d.Type {

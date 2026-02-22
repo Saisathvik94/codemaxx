@@ -1,6 +1,5 @@
 package openai
 
-
 import (
 	"bytes"
 	"context"
@@ -16,14 +15,14 @@ import (
 type OpenAIProvider struct{}
 
 type message struct {
-	Role    string `json:"role"`
+	Role   string `json:"role"`
 	Prompt string `json:"prompt"`
 }
 
 type Request struct {
-	Model   string    `json:"model"`
-	Messages []message `json:"messages"`
-	MaxTokens int     `json:"max_tokens,omitempty"`
+	Model       string    `json:"model"`
+	Messages    []message `json:"messages"`
+	MaxTokens   int       `json:"max_tokens,omitempty"`
 	Temperature float64   `json:"temperature,omitempty"`
 }
 
@@ -35,33 +34,30 @@ type Response struct {
 	} `json:"choices"`
 }
 
-
 func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, error) {
-	key, err:= keys.GetKey("openai")
+	key, err := keys.GetKey("openai")
 
-	if err !=nil {
+	if err != nil {
 		return "", fmt.Errorf("OpenAI Key is not added")
 	}
 
-
-
 	reqBody := Request{
-		Model : "gpt-4o-mini",
-		Messages : []message {
+		Model: "gpt-4o-mini",
+		Messages: []message{
 			{Role: "user", Prompt: prompt},
 		},
-		MaxTokens: 512,
+		MaxTokens:   512,
 		Temperature: 0.2,
 	}
 
 	jsonData, err := json.Marshal(reqBody)
 
-	if err!=nil {
-		return "",fmt.Errorf("failed to marshal request: %w", err)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
 
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(jsonData))
-	if err!=nil {
+	if err != nil {
 		return "", fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 
@@ -71,7 +67,7 @@ func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, er
 
 	response, err := http.DefaultClient.Do(request)
 
-	if err !=nil {
+	if err != nil {
 		return "", fmt.Errorf("failed to send HTTP request: %w", err)
 	}
 
@@ -82,9 +78,9 @@ func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, er
 		return "", fmt.Errorf("OpenAI API returned status %d: %s", response.StatusCode, string(bodyBytes))
 	}
 
-	var Resp Response 
+	var Resp Response
 
-	if err:= json.NewDecoder(response.Body).Decode(&Resp); err!=nil {
+	if err := json.NewDecoder(response.Body).Decode(&Resp); err != nil {
 		return "", fmt.Errorf("failed to decode response: %w", err)
 	}
 

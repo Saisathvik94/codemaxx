@@ -1,14 +1,13 @@
 /*
 Copyright © 2026 Saisathvik94
-
 */
 package cmd
 
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/charmbracelet/glamour"
+	"github.com/spf13/cobra"
 
 	"github.com/Saisathvik94/codemaxx/internal/ai"
 	"github.com/Saisathvik94/codemaxx/internal/files"
@@ -25,8 +24,8 @@ var explainUserPrompt string
 // explainCmd represents the ask command
 var explainCmd = &cobra.Command{
 	Use:   "explain [file] [question]",
-Short: "Get explaination of your code directly from the terminal",
-Long: `Sends your question to the selected AI model and returns a direct answer 
+	Short: "Get explaination of your code directly from the terminal",
+	Long: `Sends your question to the selected AI model and returns a direct answer 
 inside your terminal.
 
 Supports multiple providers and models.
@@ -36,9 +35,9 @@ Examples:
 	codemaxx explain main.go --prompt "enhance code quality"`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var fullPrompt string
-		if len(args) ==0 && explainUserPrompt != "" {
+		if len(args) == 0 && explainUserPrompt != "" {
 			fullPrompt = fmt.Sprintf("\n %s \nUser Question:\n%s", prompts.ExplainSystemPrompt, explainUserPrompt)
-		} else if len(args) == 1{
+		} else if len(args) == 1 {
 			filepath := args[0]
 
 			// allowed extensions
@@ -54,32 +53,29 @@ Examples:
 				return err
 			}
 
-
 			fileContent, err := files.ReadFile(filepath)
-			if err !=nil {
+			if err != nil {
 				return fmt.Errorf("failed to read file %w", err)
 			}
-
 
 			if explainUserPrompt == "" {
 				fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s", prompts.ExplainSystemPrompt, fileContent)
 
 			} else {
-				fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s \nUser Instructions : \n %s", prompts.ExplainSystemPrompt, fileContent,explainUserPrompt)
+				fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s \nUser Instructions : \n %s", prompts.ExplainSystemPrompt, fileContent, explainUserPrompt)
 			}
 		} else {
 			return fmt.Errorf("Provide a file or a --prompt question?")
 		}
-		
 
 		resp, err := ai.Generate(cmd.Context(), ai.Request{
 			Provider: "",
-			Prompt: fullPrompt,
+			Prompt:   fullPrompt,
 		})
 
 		if err != nil {
-            return fmt.Errorf("Explaination failed: %w", err)
-        }
+			return fmt.Errorf("Explanation failed: %w", err)
+		}
 
 		fmt.Print("\n=========== Code Explanation ===========\n")
 		Output(resp.Content)
@@ -92,7 +88,6 @@ Examples:
 func init() {
 	rootCmd.AddCommand(explainCmd)
 	explainCmd.Flags().StringVarP(&explainUserPrompt, "prompt", "p", "", "Extra Instruction from user")
-
 
 	// Here you will define your flags and configuration settings.
 

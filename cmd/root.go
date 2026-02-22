@@ -1,20 +1,17 @@
 /*
 Copyright © 2026 Saisathvik94
-
 */
 package cmd
 
 import (
 	"os"
 
-	"github.com/spf13/cobra"
-	_ "github.com/Saisathvik94/codemaxx/internal/models/perplexity"
-	_ "github.com/Saisathvik94/codemaxx/internal/models/openai"
-	_ "github.com/Saisathvik94/codemaxx/internal/models/gemini"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/anthropic"
+	_ "github.com/Saisathvik94/codemaxx/internal/models/gemini"
+	_ "github.com/Saisathvik94/codemaxx/internal/models/openai"
+	_ "github.com/Saisathvik94/codemaxx/internal/models/perplexity"
+	"github.com/spf13/cobra"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -59,5 +56,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-

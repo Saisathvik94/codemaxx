@@ -22,12 +22,11 @@ func (i keyItem) Description() string { return "" }
 func (i keyItem) FilterValue() string { return i.name }
 
 type keyModel struct {
-	list      list.Model
-	input     textinput.Model
-	mode      string // "list" or "input"
-	selected  string
+	list     list.Model
+	input    textinput.Model
+	mode     string // "list" or "input"
+	selected string
 }
-
 
 func SetNewKey(providers []string) keyModel {
 
@@ -101,7 +100,7 @@ func (m keyModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				err := keys.SetKey(m.selected, m.input.Value())
 				if err != nil {
-					m.input.SetValue("") 
+					m.input.SetValue("")
 					m.input.Placeholder = err.Error() // Show error as placeholder
 					return m, nil
 				}

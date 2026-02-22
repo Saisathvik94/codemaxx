@@ -44,7 +44,6 @@ func (p GeminiProvider) Generate(ctx context.Context, prompt string) (string, er
 		return "", fmt.Errorf("Gemini key is empty")
 	}
 
-	
 	fullPrompt := prompt
 
 	reqBody := GeminiRequest{

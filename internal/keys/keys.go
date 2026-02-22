@@ -2,8 +2,8 @@ package keys
 
 import (
 	"errors"
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/Saisathvik94/codemaxx/internal/config"
 )
@@ -27,9 +27,9 @@ func GetKey(provider string) (string, error) {
 func SetKey(provider, key string) error {
 
 	if strings.TrimSpace(key) == "" {
-        return fmt.Errorf("cannot save an empty API key for provider: %s", provider)
-    }
-	
+		return fmt.Errorf("cannot save an empty API key for provider: %s", provider)
+	}
+
 	cfg, err := config.Load()
 	if err != nil {
 		return err

@@ -88,5 +88,3 @@ func SetDefaultProvider(provider string) error {
 	cfg.DefaultProvider = provider
 	return Save(cfg)
 }
-
-

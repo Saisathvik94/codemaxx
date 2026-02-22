@@ -48,13 +48,10 @@ var fixCmd = &cobra.Command{
 			return err
 		}
 
-
 		originalFileContent, err := files.ReadFile(filepath)
-		if err !=nil {
+		if err != nil {
 			return fmt.Errorf("failed to read file %w", err)
 		}
-
-
 
 		var fullPrompt string
 
@@ -62,27 +59,26 @@ var fixCmd = &cobra.Command{
 			fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s", prompts.SystemPrompt, originalFileContent)
 
 		} else {
-			fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s \nUser Instructions : \n %s", prompts.SystemPrompt, originalFileContent,userPrompt)
+			fullPrompt = fmt.Sprintf("\n %s \nFile Content: \n%s \nUser Instructions : \n %s", prompts.SystemPrompt, originalFileContent, userPrompt)
 		}
 
 		resp, err := ai.Generate(cmd.Context(), ai.Request{
 			Provider: "",
-			Prompt: fullPrompt,
+			Prompt:   fullPrompt,
 		})
 
 		if err != nil {
-            return fmt.Errorf("Code generation failed: %w", err)
-        }
+			return fmt.Errorf("Code generation failed: %w", err)
+		}
 
 		var modifiedFileContent = resp.Content
 
 		err = os.WriteFile(filepath, []byte(modifiedFileContent), 0644)
-		if err!=nil {
+		if err != nil {
 			return fmt.Errorf("failed to write AI changes: %w", err)
 		}
 
 		diff.ShowDiff(originalFileContent, modifiedFileContent)
-		
 
 		for {
 			fmt.Print("\nKeep changes? (y/n): ")
@@ -108,8 +104,8 @@ var fixCmd = &cobra.Command{
 				fmt.Println("Please enter 'y' or 'n'")
 			}
 		}
-			},
-		}
+	},
+}
 
 func init() {
 	rootCmd.AddCommand(fixCmd)

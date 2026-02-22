@@ -1,16 +1,15 @@
 /*
 Copyright © 2026 Saisathvik94
-
 */
 package cmd
 
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/Saisathvik94/codemaxx/internal/models"
 	"github.com/Saisathvik94/codemaxx/internal/ui"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/spf13/cobra"
 )
 
 // keysCmd represents the keys command

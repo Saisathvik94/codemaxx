@@ -31,7 +31,6 @@ type model struct {
 	quitting bool
 }
 
-
 func NewModelSelector(providers []string) model {
 	cfg, _ := config.Load()
 
