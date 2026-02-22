@@ -28,7 +28,7 @@ archives:
     builds:
       - codemaxx
     format: tar.gz
-    name_template: >
+    name_template: |
       {{ .ProjectName }}_{{ .Tag }}_{{ if eq .Os "darwin" }}macos{{ else if eq .Os "windows" }}windows{{ else }}{{ .Os }}{{ end }}_{{ .Arch }}
     format_overrides:
       - goos: windows
