@@ -1,0 +1,16 @@
+# Binaries
+/bin/
+/*.exe
+/*.out
+
+# Generated documentation and shell completion files
+
+completions/
+manpages/
+
+# OS / Editor files
+*.DS_Store
+*.swp
+
+# environment variables
+.env

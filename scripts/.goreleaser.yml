@@ -1,0 +1,45 @@
+version: 2
+
+project_name: codemaxx
+
+release:
+  github:
+    owner: Saisathvik94
+    name: codemaxx
+
+builds:
+  - id: codemaxx
+    main: .
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: codemaxx
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+
+archives:
+  - id: unix
+    builds:
+      - codemaxx
+    format: tar.gz
+    name_template: >
+      {{ .ProjectName }}_{{ .Tag }}_{{ if eq .Os "darwin" }}macos{{ else if eq .Os "windows" }}windows{{ else }}{{ .Os }}{{ end }}_{{ .Arch }}
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+changelog:
+  sort: asc
+
+snapshot:
+  name_template: "{{ .Tag }}-snapshot"
