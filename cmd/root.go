@@ -4,12 +4,14 @@ Copyright © 2026 Saisathvik94
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	_ "github.com/Saisathvik94/codemaxx/internal/models/anthropic"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/gemini"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/openai"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/perplexity"
+	_ "github.com/Saisathvik94/codemaxx/internal/models/ollama"
 	"github.com/spf13/cobra"
 )
 
@@ -45,6 +47,9 @@ func Execute() {
 	}
 }
 
+var Version string
+var Commit string
+
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -54,5 +59,6 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Version = fmt.Sprintf("%s (commit: %s)", Version, Commit)
+	rootCmd.SetVersionTemplate("CodeMaxx version: {{.Version}}\n")
 }

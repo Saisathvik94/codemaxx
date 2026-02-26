@@ -16,7 +16,7 @@ type PerplexityProvider struct{}
 
 type message struct {
 	Role   string `json:"role"`
-	Prompt string `json:"prompt"`
+	Content string `json:"content"`
 }
 
 type Request struct {
@@ -44,7 +44,7 @@ func (p PerplexityProvider) Generate(ctx context.Context, prompt string) (string
 	reqBody := Request{
 		Model: "sonar-small-chat",
 		Messages: []message{
-			{Role: "user", Prompt: prompt},
+			{Role: "user", Content: prompt},
 		},
 		MaxTokens:   512,
 		Temperature: 0.2,

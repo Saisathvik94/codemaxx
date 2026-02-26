@@ -30,13 +30,13 @@ EOF
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        echo -e "${RED}❌ Please run as root (sudo)${RESET}"
+        echo -e "${RED}Please run as root (sudo)${RESET}"
         exit 1
     fi
 }
 
 get_latest_release() {
-    echo -e "${YELLOW}🔍 Fetching latest release...${RESET}"
+    echo -e "${YELLOW}Fetching latest release...${RESET}"
     local latest_json
     latest_json=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest")
     VERSION=$(echo "$latest_json" | sed -n 's/.*"tag_name": "\(.*\)".*/\1/p')
@@ -49,7 +49,7 @@ determine_os_arch() {
     case "$ARCH" in
         x86_64) ARCH="amd64" ;;
         arm64|aarch64) ARCH="arm64" ;;
-        *) echo -e "${RED}❌ Unsupported architecture: $ARCH${RESET}" ; exit 1 ;;
+        *) echo -e "${RED}Unsupported architecture: $ARCH${RESET}" ; exit 1 ;;
     esac
 
     ZIP_NAME="codemaxx_${VERSION}_${OS}_${ARCH}.zip"
@@ -58,16 +58,16 @@ determine_os_arch() {
 }
 
 download_release() {
-    echo -e "${GREEN}📦 Downloading $ZIP_NAME...${RESET}"
-    curl -fL -o "$ZIP_PATH" "$URL" || { echo -e "${RED}❌ Download failed${RESET}"; exit 1; }
+    echo -e "${GREEN}Downloading $ZIP_NAME...${RESET}"
+    curl -fL -o "$ZIP_PATH" "$URL" || { echo -e "${RED}Download failed${RESET}"; exit 1; }
 }
 
 extract_and_install() {
-    echo -e "${CYAN}📂 Extracting files...${RESET}"
+    echo -e "${CYAN}Extracting files...${RESET}"
     unzip -o "$ZIP_PATH" -d "$TMP_DIR"
 
     if [[ ! -f "$TMP_DIR/$BINARY" ]]; then
-        echo -e "${RED}❌ Binary not found in archive${RESET}"
+        echo -e "${RED}Binary not found in archive${RESET}"
         exit 1
     fi
 
@@ -79,16 +79,16 @@ extract_and_install() {
 }
 
 show_success() {
-    echo -e "${GREEN}✅ codemaxx installed successfully!${RESET}"
-    echo -e "${CYAN}📌 Version: $VERSION${RESET}"
-    echo -e "${CYAN}📂 Location: $INSTALL_DIR/$BINARY${RESET}"
-    echo -e "${YELLOW}🔁 Run:${RESET} codemaxx --help"
+    echo -e "${GREEN}codemaxx installed successfully!${RESET}"
+    echo -e "${CYAN}Version: $VERSION${RESET}"
+    echo -e "${CYAN}Location: $INSTALL_DIR/$BINARY${RESET}"
+    echo -e "${YELLOW}Run:${RESET} codemaxx --help"
 }
 
 # ---------------- SCRIPT EXECUTION ----------------
 check_root
 show_ascii
-echo -e "${CYAN}🚀 Installing CodeMaxx CLI Tool...${RESET}"
+echo -e "${CYAN}Installing CodeMaxx CLI Tool...${RESET}"
 
 get_latest_release
 determine_os_arch

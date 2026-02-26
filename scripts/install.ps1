@@ -28,41 +28,71 @@ function Ensure-Admin {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        Write-Host "❌ Please run this script as Administrator!" -ForegroundColor Red
+        Write-Host "Please run this script as Administrator!" -ForegroundColor Red
         exit 1
     }
 }
 
 function Get-LatestVersion {
-    Write-Host "🔍 Fetching latest release..." -ForegroundColor Yellow
+    Write-Host "Fetching latest release..." -ForegroundColor Yellow
     $Latest = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest"
     return $Latest.tag_name
 }
 
 function Download-CodeMaxx {
     param($Version)
+
     $ZipName = "codemaxx_${Version}_windows_amd64.zip"
     $Url = "https://github.com/$Repo/releases/download/$Version/$ZipName"
 
-    Write-Host "📦 Downloading $ZipName ..." -ForegroundColor Yellow
+    Write-Host "Downloading $ZipName ..." -ForegroundColor Yellow
 
     if (-Not (Test-Path $TempDir)) {
         New-Item -ItemType Directory -Path $TempDir | Out-Null
     }
 
     $ZipPath = Join-Path $TempDir $ZipName
-    Invoke-WebRequest -Uri $Url -OutFile $ZipPath
+
+    # Create request
+    $Request = [System.Net.HttpWebRequest]::Create($Url)
+    $Response = $Request.GetResponse()
+    $TotalBytes = $Response.ContentLength
+    $Stream = $Response.GetResponseStream()
+
+    $FileStream = [System.IO.File]::Create($ZipPath)
+    $Buffer = New-Object byte[] 8192
+
+    $TotalRead = 0
+
+    while (($Read = $Stream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
+        $FileStream.Write($Buffer, 0, $Read)
+        $TotalRead += $Read
+
+        $Percent = [Math]::Round(($TotalRead / $TotalBytes) * 100, 2)
+
+        Write-Progress `
+            -Activity "Downloading CodeMaxx" `
+            -Status "$Percent% Complete" `
+            -PercentComplete $Percent
+    }
+
+    $FileStream.Close()
+    $Stream.Close()
+    $Response.Close()
+
+    Write-Progress -Activity "Downloading CodeMaxx" -Completed
+
     return $ZipPath
 }
 
 function Install-CodeMaxx {
     param($ZipPath)
 
-    Write-Host "📂 Extracting archive ..." -ForegroundColor Yellow
+    Write-Host "Extracting archive ..." -ForegroundColor Yellow
     Expand-Archive -LiteralPath $ZipPath -DestinationPath $TempDir -Force
 
     if (Test-Path "$InstallDir\$Binary") {
-        Write-Host "🧹 Removing existing CodeMaxx ..." -ForegroundColor Yellow
+        Write-Host "Removing existing CodeMaxx ..." -ForegroundColor Yellow
         Remove-Item "$InstallDir\$Binary" -Force
     }
 
@@ -82,14 +112,14 @@ function Install-CodeMaxx {
     # Cleanup
     Remove-Item $TempDir -Recurse -Force
 
-    Write-Host "✅ CodeMaxx installed successfully!" -ForegroundColor Green
-    Write-Host "🔁 Restart terminal and run: codemaxx --help"
+    Write-Host "CodeMaxx installed successfully!" -ForegroundColor Green
+    Write-Host "Restart terminal and run: codemaxx --help"
 }
 
 # ---------------- SCRIPT EXECUTION ----------------
 Ensure-Admin
 Show-ASCII
-Write-Host "🚀 Installing CodeMaxx CLI Tool..." -ForegroundColor Cyan
+Write-Host "Installing CodeMaxx CLI Tool..." -ForegroundColor Cyan
 
 $Version = Get-LatestVersion
 $ZipPath = Download-CodeMaxx -Version $Version

@@ -1,4 +1,5 @@
-package openai
+package ollama
+
 
 import (
 	"bytes"
@@ -8,11 +9,10 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Saisathvik94/codemaxx/internal/keys"
 	"github.com/Saisathvik94/codemaxx/internal/models"
 )
 
-type OpenAIProvider struct{}
+type OllamaProvider struct{}
 
 type message struct {
 	Role   string `json:"role"`
@@ -24,6 +24,7 @@ type Request struct {
 	Messages    []message `json:"messages"`
 	MaxTokens   int       `json:"max_tokens,omitempty"`
 	Temperature float64   `json:"temperature,omitempty"`
+	Stream      bool 	  `json:"stream"`
 }
 
 type Response struct {
@@ -34,20 +35,17 @@ type Response struct {
 	} `json:"choices"`
 }
 
-func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, error) {
-	key, err := keys.GetKey("openai")
+func (p OllamaProvider) Generate(ctx context.Context, prompt string) (string, error) {
 
-	if err != nil {
-		return "", fmt.Errorf("OpenAI Key is not added")
-	}
 
 	reqBody := Request{
-		Model: "gpt-4o-mini",
+		Model: "qwen2.5-coder:3b",
 		Messages: []message{
 			{Role: "user", Content: prompt},
 		},
-		MaxTokens:   512,
+		MaxTokens:   100,
 		Temperature: 0.2,
+		Stream: false,
 	}
 
 	jsonData, err := json.Marshal(reqBody)
@@ -56,14 +54,13 @@ func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, er
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:11434/v1/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return "", fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", key))
 
 	response, err := http.DefaultClient.Do(request)
 
@@ -75,7 +72,7 @@ func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, er
 
 	if response.StatusCode != http.StatusOK {
 		bodyBytes, _ := io.ReadAll(response.Body)
-		return "", fmt.Errorf("OpenAI API returned status %d: %s", response.StatusCode, string(bodyBytes))
+		return "", fmt.Errorf("returned status %d: %s", response.StatusCode, string(bodyBytes))
 	}
 
 	var Resp Response
@@ -85,12 +82,12 @@ func (p OpenAIProvider) Generate(ctx context.Context, prompt string) (string, er
 	}
 
 	if len(Resp.Choices) == 0 {
-		return "", fmt.Errorf("No response from OpenAI")
+		return "", fmt.Errorf("No response from Ollama")
 	}
 
 	return Resp.Choices[0].Message.Content, nil
 }
 
 func init() {
-	models.RegisterProvider("openai", OpenAIProvider{})
+	models.RegisterProvider("ollama", OllamaProvider{})
 }

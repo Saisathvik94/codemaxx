@@ -16,7 +16,7 @@ type AnthropicProvider struct{}
 
 type message struct {
 	Role   string `json:"role"`
-	Prompt string `json:"prompt"`
+	Content string `json:"content"`
 }
 
 type Request struct {
@@ -44,7 +44,7 @@ func (p AnthropicProvider) Generate(ctx context.Context, prompt string) (string,
 	reqBody := Request{
 		Model: "clause-opus-4.6",
 		Messages: []message{
-			{Role: "user", Prompt: prompt},
+			{Role: "user", Content: prompt},
 		},
 		MaxTokens:   512,
 		Temperature: 0.2,
