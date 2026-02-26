@@ -15,7 +15,7 @@ import (
 type OpenAIProvider struct{}
 
 type message struct {
-	Role   string `json:"role"`
+	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 

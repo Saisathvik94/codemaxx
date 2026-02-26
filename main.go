@@ -11,7 +11,6 @@ import (
 	"github.com/Saisathvik94/codemaxx/cmd"
 )
 
-
 func enableVirtualTerminal() {
 	if runtime.GOOS != "windows" {
 		return

@@ -9,9 +9,9 @@ import (
 
 	_ "github.com/Saisathvik94/codemaxx/internal/models/anthropic"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/gemini"
+	_ "github.com/Saisathvik94/codemaxx/internal/models/ollama"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/openai"
 	_ "github.com/Saisathvik94/codemaxx/internal/models/perplexity"
-	_ "github.com/Saisathvik94/codemaxx/internal/models/ollama"
 	"github.com/spf13/cobra"
 )
 

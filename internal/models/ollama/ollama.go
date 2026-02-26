@@ -1,6 +1,5 @@
 package ollama
 
-
 import (
 	"bytes"
 	"context"
@@ -15,7 +14,7 @@ import (
 type OllamaProvider struct{}
 
 type message struct {
-	Role   string `json:"role"`
+	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
@@ -24,7 +23,7 @@ type Request struct {
 	Messages    []message `json:"messages"`
 	MaxTokens   int       `json:"max_tokens,omitempty"`
 	Temperature float64   `json:"temperature,omitempty"`
-	Stream      bool 	  `json:"stream"`
+	Stream      bool      `json:"stream"`
 }
 
 type Response struct {
@@ -37,7 +36,6 @@ type Response struct {
 
 func (p OllamaProvider) Generate(ctx context.Context, prompt string) (string, error) {
 
-
 	reqBody := Request{
 		Model: "qwen2.5-coder:3b",
 		Messages: []message{
@@ -45,7 +43,7 @@ func (p OllamaProvider) Generate(ctx context.Context, prompt string) (string, er
 		},
 		MaxTokens:   100,
 		Temperature: 0.2,
-		Stream: false,
+		Stream:      false,
 	}
 
 	jsonData, err := json.Marshal(reqBody)

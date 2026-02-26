@@ -44,14 +44,14 @@ var reviewCmd = &cobra.Command{
 
 	This command does NOT modify your files. It only prints an AI-generated review in your terminal.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		
+
 		// gitcommand
 		gitCmd := exec.Command("git", "diff", "--cached")
 
 		var out bytes.Buffer
 		gitCmd.Stdout = &out
 
-		err:= gitCmd.Run() 
+		err := gitCmd.Run()
 
 		if err != nil {
 			fmt.Println("Failed to get staged changes.")
@@ -60,14 +60,14 @@ var reviewCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		diff:= out.String()
+		diff := out.String()
 
 		if diff == "" {
 			fmt.Println("No staged changes found.")
 			return nil
 		}
 
-		if len(diff)>5000 {
+		if len(diff) > 5000 {
 			fmt.Println("Staged diff is too large to review at once.")
 			fmt.Println("Please stage smaller changes and review them incrementally.")
 			return nil
