@@ -20,8 +20,8 @@ builds:
     binary: codemaxx
     ldflags:
       - -s -w
-      - -X main.version={{ .Version }}
-      - -X main.commit={{ .Commit }}
+      - -X github.com/Saisathvik94/codemaxx/cmd.Version={{ .Version }}
+      - -X github.com/Saisathvik94/codemaxx/cmd.Commit={{ .Commit }}
 
 archives:
   - id: unix
